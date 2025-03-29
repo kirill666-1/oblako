@@ -1,20 +1,28 @@
-import socket
+import socket  # Модуль для работы с сокетами
 
-sock = socket.socket()
-sock.bind(('', 9090))
-sock.listen(0)
-conn, addr = sock.accept()
-print(addr)
+def main():
+    sock = socket.socket()
+    # Создаем сокет (TCP по умолчанию)
+    sock.connect(('localhost', 9090))
+    # Подключаемся к серверу по адресу и порту
+    # Если сервер находится на удаленной машине, замените 'localhost' на IP-адрес сервера
 
-msg = ''
+    while True:
+        # Бесконечный цикл для отправки сообщений на сервер
+        msg = input("Введите сообщение для отправки (для выхода введите 'exit'): ")
+        # Запрашиваем у пользователя сообщение для отправки
+        if msg.lower() == 'exit':
+            # Если пользователь ввел 'exit', выходим из цикла и завершаем работу
+            break
+        sock.send(msg.encode())
+        # Отправляем сообщение на сервер, предварительно преобразовав его в байты
+        data = sock.recv(1024)
+        # Получаем данные от сервера (ожидаем эхо нашего сообщения)
+        print("Получено от сервера:", data.decode())
+        # Выводим полученное сообщение, декодируя его из байтов в строку
 
-while True:
-	data = conn.recv(1024)
-	if not data:
-		break
-	msg += data.decode()
-	conn.send(data)
+    sock.close()
+    # Закрываем соединение с сервером
 
-print(msg)
-
-conn.close()
+if name == "main":
+    main()
